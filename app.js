@@ -12,16 +12,7 @@ mongoose.connect(uri, {})
 app.use(express.json())
 
 app.get('/api', async(req,res) =>{
-  const data = {
-    
-  }
-  res.status(200).json({
-    status: {
-      code: 200,
-      message: "Success"
-    },
-    data: data
-  })
+  res.send('hai ngapain kesini?')
 })
 
 app.get('/api/products', async (req, res) =>{
