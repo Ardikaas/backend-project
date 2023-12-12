@@ -1,0 +1,43 @@
+
+html{
+    scroll-behavior: smooth;
+}
+
+body{
+    background-color: #1b1b1b;
+    font-family: 'Roboto', sans-serif;
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 1.5;
+    color: #ffffff;
+}
+
+.table-container{
+    width: 100%;
+    margin: 0 auto;
+    padding: 0 30px;
+}
+
+.ml-5{
+    margin-left: 3rem;
+}
+
+.border{
+    border: 2px solid #ffffff;
+}
+
+.table-dark{
+    background-color: #1b1b1b;
+}
+
+.center-text{
+    text-align: center;
+}
+
+.mt-3{
+    margin-top: 1rem;
+}
+
+.pb-3{
+    padding-bottom: 1rem;
+}

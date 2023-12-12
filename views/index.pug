@@ -1,0 +1,45 @@
+html 
+    head 
+        title #{title}
+        style
+            include css/style.css
+    body
+        h1(class="ml-5") #{title} 
+        p(class="ml-5") Welcome to E Commerce #{title}
+        table(class="table-container")
+            tr
+                th(class="pb-3 border") Route
+                th(class="pb-3 border") Description
+                th(class="pb-3 border") Method
+                th(class="pb-3 border") Response
+                tr 
+                    td(class="border pb-3") /api
+                    td(class="border center-text") API Home
+                    td(class="border center-text") GET
+                    td(class="border center-text") JSON
+                tr
+                    td(class="border pb-3") /api/products
+                    td(class="border center-text") List of all products
+                    td(class="border center-text") GET
+                    td(class="border center-text") JSON
+                tr
+                    td(class="border pb-3") /api/products/:id
+                    td(class="border center-text") Get product by id
+                    td(class="border center-text") GET
+                    td(class="border center-text") JSON
+                tr
+                    td(class="border pb-3") /api/products/:id
+                    td(class="border center-text") Delete product by id
+                    td(class="border center-text") DELETE
+                    td(class="border center-text") JSON
+                tr
+                    td(class="border pb-3") /api/products/:id
+                    td(class="border center-text") Update product by id
+                    td(class="border center-text") PUT
+                    td(class="border center-text") JSON
+                tr
+                    td(class="border pb-3") /api/products
+                    td(class="border center-text") Create a new product
+                    td(class="border center-text") POST
+                    td(class="border center-text") JSON
+        div
