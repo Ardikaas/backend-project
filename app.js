@@ -7,10 +7,16 @@ const uri = "mongodb://127.0.0.1:27017/backend"
 const app = express()
 const port = 8080
 
+
 mongoose.connect(uri, {})
   .then(result => console.log("database connected succesfully"))
   .catch(err => console.log(err))
 app.use(express.json())
+app.set('view engine', 'pug')
+
+app.get('/', async(req,res) => {
+  res.render('index', {title: 'API Reference'})
+})
 
 app.get('/api', async(req,res) =>{
   res.send('hai ngapain kesini?')
