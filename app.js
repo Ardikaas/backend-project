@@ -42,6 +42,10 @@ app.delete('/api/products/:id', async (req, res) =>{
   ProductController.deleteProduct(req, res)
 })
 
+app.post('/api/products/:id/reviews', async (req, res) =>{
+  ProductController.createProductReview(req, res)
+})
+
 app.listen(port, ()=>{
   console.log(
     `listening on port http://localhost:${port}`
