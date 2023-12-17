@@ -1,4 +1,5 @@
 const User = require("../models/userModel.js");
+const bcrypt = require("bcrypt");
 
 const UserController = {
   getAllUsers,
@@ -38,8 +39,37 @@ async function getUserById(req, res) {
 
 async function createUser(req, res) {
   try {
-    const user = await User.create(req.body);
-    res.json(user);
+    const {
+      username,
+      password,
+      email,
+      firstName,
+      lastName,
+      birthDate,
+      avatar,
+      role,
+    } = req.body;
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    const newUser = new User({
+      username,
+      password: hashedPassword,
+      email,
+      firstName,
+      lastName,
+      birthDate,
+      avatar,
+      role,
+    });
+
+    const user = await newUser.save();
+    res.status(200).json({
+      status: {
+        code: 200,
+        message: "Success",
+      },
+      data: user,
+    });
   } catch (error) {
     res.status(500).json({ message: "Server Error" });
   }
