@@ -107,6 +107,11 @@ async function createProductReview(req, res) {
   try {
     const { rating, comment } = req.body;
 
+    if (!req.user || !req.user._id) {
+      res.status(400).json({ message: "Invalid user information" });
+      return;
+    }
+
     const product = await Product.findById(req.params.id);
 
     if (product) {
@@ -119,7 +124,7 @@ async function createProductReview(req, res) {
       }
 
       const review = {
-        name: req.user.name,
+        name: req.user.username,
         rating: Number(rating),
         comment,
         user: req.user._id,

@@ -2,6 +2,7 @@ const express = require("express");
 const mongoose = require("mongoose");
 const ProductController = require("./controller/productController");
 const UserController = require("./controller/userController");
+const protect = require("./middleware/authMiddleware");
 
 const uri = "mongodb://127.0.0.1:27017/backend";
 const app = express();
@@ -42,7 +43,7 @@ app.delete("/api/products/:id", async (req, res) => {
   ProductController.deleteProduct(req, res);
 });
 
-app.post("/api/products/:id/reviews", async (req, res) => {
+app.post("/api/products/:id/reviews", protect, async (req, res) => {
   ProductController.createProductReview(req, res);
 });
 
@@ -56,6 +57,14 @@ app.get("/user/:id", async (req, res) => {
 
 app.post("/user/register", async (req, res) => {
   UserController.createUser(req, res);
+});
+
+app.post("/user/login", async (req, res) => {
+  UserController.loginUser(req, res);
+});
+
+app.get("/user/logout", async (req, res) => {
+  UserController.logoutUser(req, res);
 });
 
 app.listen(port, () => {
