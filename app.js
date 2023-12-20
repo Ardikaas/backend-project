@@ -2,6 +2,7 @@ const express = require("express");
 const mongoose = require("mongoose");
 const ProductController = require("./controller/productController");
 const UserController = require("./controller/userController");
+const WishlistController = require("./controller/wishlistController");
 const protect = require("./middleware/authMiddleware");
 
 const uri = "mongodb://127.0.0.1:27017/backend";
@@ -45,6 +46,14 @@ app.delete("/api/products/:id", async (req, res) => {
 
 app.post("/api/products/:id/reviews", protect, async (req, res) => {
   ProductController.createProductReview(req, res);
+});
+
+app.post("/api/products/wishlist/:id", protect, async (req, res) => {
+  WishlistController.createWishlist(req, res);
+});
+
+app.delete("/api/products/wishlist/:id", protect, async (req, res) => {
+  WishlistController.deleteWishlist(req, res);
 });
 
 app.get("/user", async (req, res) => {
