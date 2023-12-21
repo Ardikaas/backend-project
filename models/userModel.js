@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const findOrCreate = require("mongoose-findorcreate");
 
 const userSchema = mongoose.Schema(
   {
@@ -12,7 +13,7 @@ const userSchema = mongoose.Schema(
     },
     email: {
       type: String,
-      required: [true],
+      required: [true, "Please enter the email"],
     },
     firstName: {
       type: String,
@@ -42,6 +43,7 @@ const userSchema = mongoose.Schema(
   }
 );
 
+userSchema.plugin(findOrCreate);
 const User = mongoose.model("User", userSchema);
 
 module.exports = User;
