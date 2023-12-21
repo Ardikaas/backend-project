@@ -136,7 +136,9 @@ async function loginUser(req, res) {
 }
 
 async function logoutUser(req, res) {
-  res.cookie("jwt", "", { maxAge: 1 });
+  const token = req.user.token;
+  const newToken = token.filter((t) => t.token !== token);
+  await User.findByIdAndUpdate(req.user._id, { token: newToken });
   res.status(200).json({
     status: {
       code: 200,
