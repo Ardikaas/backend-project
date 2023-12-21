@@ -2,6 +2,8 @@ const express = require("express");
 const mongoose = require("mongoose");
 const ProductController = require("./controller/productController");
 const UserController = require("./controller/userController");
+const WishlistController = require("./controller/wishlistController");
+const CartController = require("./controller/cartController");
 const protect = require("./middleware/authMiddleware");
 const GoogleStrategy = require("passport-google-oauth20").Strategy;
 const passport = require("passport");
@@ -85,6 +87,22 @@ app.delete("/api/products/:id", async (req, res) => {
 
 app.post("/api/products/:id/reviews", protect, async (req, res) => {
   ProductController.createProductReview(req, res);
+});
+
+app.post("/api/products/wishlist/:id", protect, async (req, res) => {
+  WishlistController.createWishlist(req, res);
+});
+
+app.delete("/api/products/wishlist/:id", protect, async (req, res) => {
+  WishlistController.deleteWishlist(req, res);
+});
+
+app.post("/api/products/:id/cart", protect, async (req, res) => {
+  CartController.addtoCart(req, res);
+});
+
+app.delete("/api/products/:id/cart", protect, async (req, res) => {
+  CartController.deltoCart(req, res);
 });
 
 app.get("/user", async (req, res) => {
