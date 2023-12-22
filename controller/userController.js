@@ -82,7 +82,7 @@ async function createUser(req, res) {
       token,
     });
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    res.status(500).json({ message: "Server Error" })
   }
 }
 
