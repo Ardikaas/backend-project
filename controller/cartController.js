@@ -16,14 +16,14 @@ async function addtoCart(req, res) {
       return;
     }
 
-    const totalprice = product.price * quantity;
     const userId = req.user._id;
     const user = await User.findById(userId);
 
     const data = {
       productid: product.id,
       name: product.name,
-      price: totalprice,
+      overview: product.overview,
+      price: product.price,
       quantity: quantity,
       image: product.image,
     };

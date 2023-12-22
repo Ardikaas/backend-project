@@ -9,6 +9,10 @@ const cartSchema = mongoose.Schema({
     type: String,
     required: [true],
   },
+  overview: {
+    type: String,
+    required: [true],
+  },
   image: {
     type: String,
     required: [false],
@@ -21,6 +25,10 @@ const cartSchema = mongoose.Schema({
     type: Number,
     required: [true],
   },
+  note: {
+    type: String,
+    required: [false],
+  },
 });
 
 const wishlistSchema = mongoose.Schema({
@@ -29,6 +37,10 @@ const wishlistSchema = mongoose.Schema({
     required: [true],
   },
   name: {
+    type: String,
+    required: [true],
+  },
+  overview: {
     type: String,
     required: [true],
   },
@@ -47,12 +59,30 @@ const historySchema = mongoose.Schema({
     type: String,
     required: [true],
   },
-  quantity: {
+  name: {
+    type: String,
+    required: [true],
+  },
+  overview: {
+    type: String,
+    required: [true],
+  },
+  image: {
+    type: String,
+    required: [true],
+  },
+  price: {
     type: Number,
     required: [true],
   },
+  orderStatus: {
+    type: String,
+    enum: ["processing", "shipped", "delivered"],
+    default: "delivered",
+  },
   date: {
     type: Date,
+    default: Date.now(),
     required: [true],
   },
 });

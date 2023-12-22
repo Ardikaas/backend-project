@@ -20,6 +20,7 @@ async function createWishlist(req, res) {
     const data = {
       productid: product.id,
       name: product.name,
+      overview: product.overview,
       price: product.price,
       image: product.image,
     };

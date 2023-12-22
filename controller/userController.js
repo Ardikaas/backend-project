@@ -13,6 +13,8 @@ const UserController = {
   deleteUser,
   loginUser,
   logoutUser,
+  userProfile,
+  inputEmail,
 };
 
 async function getAllUsers(req, res) {
@@ -145,6 +147,39 @@ async function logoutUser(req, res) {
       message: "Logout Success",
     },
   });
+}
+
+async function userProfile(req, res) {
+  try {
+    if (!req.user || !req.user._id) {
+      res.status(400).json({ message: "Invalid user information" });
+      return;
+    }
+
+    const userId = req.user._id;
+    const user = await User.findById(userId).select("-password");
+
+    res.status(200).json({
+      status: {
+        code: 200,
+        message: "Success",
+      },
+      data: user,
+    });
+  } catch (error) {
+    res.status(500).json({
+      code: 500,
+      message: error.message,
+    });
+  }
+}
+
+async function inputEmail(req, res) {
+  try {
+    const { email } = req.body;
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
 }
 
 module.exports = UserController;
