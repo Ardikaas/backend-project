@@ -1,54 +1,66 @@
-const express = require("express");
-const mongoose = require("mongoose");
 const ProductController = require("./controller/productController");
 const UserController = require("./controller/userController");
 const WishlistController = require("./controller/wishlistController");
 const CartController = require("./controller/cartController");
 const Checkout = require("./controller/checkoutController");
 const bodyParser = require("body-parser");
-const protect = require("./middleware/authMiddleware");
-const GoogleStrategy = require("passport-google-oauth20").Strategy;
 const passport = require("passport");
 const User = require("./models/userModel");
+const path = require("path");
+const mongoose = require("mongoose");
+const GoogleStrategy = require("passport-google-oauth20").Strategy;
+const multer = require("multer");
+const express = require("express");
+const protect = require("./middleware/authMiddleware");
 const expressSession = require("express-session");
 
-passport.use( new GoogleStrategy({
-  clientID: "466682886251-aqceprl95ungd9bpvdjlu8909ptlg26b.apps.googleusercontent.com",
-  clientSecret: "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",
-  callbackURL: "http://localhost:8080/auth/google/callback"},
-
-function(accessToken, refreshToken, profile, cb) {
-  User.findOrCreate(
-    { googleId: profile.id }, 
-    { username: profile.displayName,
-      email: profile.emails[0].value,
-      firstName: profile.name.givenName,
-      lastName: profile.name.familyName,
-      role: "user"
+passport.use(
+  new GoogleStrategy(
+    {
+      clientID:
+        "466682886251-aqceprl95ungd9bpvdjlu8909ptlg26b.apps.googleusercontent.com",
+      clientSecret: "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",
+      callbackURL: "http://localhost:8080/auth/google/callback",
     },
-  
-    function (err, user) {
-    return cb(err, user);
-  });
-}));
+
+    function (accessToken, refreshToken, profile, cb) {
+      User.findOrCreate(
+        { googleId: profile.id },
+        {
+          username: profile.displayName,
+          email: profile.emails[0].value,
+          firstName: profile.name.givenName,
+          lastName: profile.name.familyName,
+          role: "user",
+        },
+
+        function (err, user) {
+          return cb(err, user);
+        }
+      );
+    }
+  )
+);
 
 const uri = "mongodb://127.0.0.1:27017/backend";
 const app = express();
 const port = 8080;
 
-app.use(expressSession({ 
-  secret: 'CattoGetto',
-  resave: false,
-  saveUninitialized: true,
-  cookie: { secure: true }
- }))
+app.use(
+  expressSession({
+    secret: "CattoGetto",
+    resave: false,
+    saveUninitialized: true,
+    cookie: { secure: true },
+  })
+);
 app.use(passport.initialize());
 app.use(passport.session());
 
-passport.serializeUser(function(user, done) {
+passport.serializeUser(function (user, done) {
   done(null, user);
 });
-passport.deserializeUser(function(user, done) {
+passport.deserializeUser(function (user, done) {
   done(null, user);
 });
 
@@ -56,8 +68,36 @@ mongoose
   .connect(uri, {})
   .then((result) => console.log("database connected succesfully"))
   .catch((err) => console.log(err));
+
+const upload = (storage) => {
+  return multer({
+    storage: multer.diskStorage({
+      destination: (req, file, cb) => {
+        cb(null, `images/${storage}/`);
+      },
+      filename: (req, file, cb) => {
+        cb(null, Date.now() + path.extname(file.originalname));
+      },
+    }),
+    fileFilter: (req, file, cb) => {
+      const allowed = /jpeg|jpg|png|gif/;
+      const isAllowedFile = allowed.test(
+        path.extname(file.originalname).toLowerCase()
+      );
+      const isAllowedMime = allowed.test(file.mimetype);
+
+      if (isAllowedFile && isAllowedMime) {
+        cb(null, true);
+      } else {
+        cb(new Error("File harus berupa gambar (jpeg, jpg, png, gif)"), false);
+      }
+    },
+  });
+};
+
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
+app.use("/images", express.static(path.join(__dirname, "images")));
 app.use((req, res, next) => {
   res.setHeader("Access-Control-Allow-Origin", "*");
   res.setHeader(
@@ -67,6 +107,7 @@ app.use((req, res, next) => {
   res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
   next();
 });
+
 app.set("view engine", "pug");
 
 app.get("/", async (req, res) => {
@@ -149,13 +190,34 @@ app.get("/user/logout", async (req, res) => {
   UserController.logoutUser(req, res);
 });
 
-app.get("/auth/google/success", (req, res) => {
-  res.render("loginsuccess", { title: "Login Success", user: req.session.user });
+app.post(
+  "/user/avatar",
+  protect,
+  upload("avatars").single("avatar"),
+  async (req, res) => {
+    UserController.uploadAvatar(req, res);
+  }
+);
+
+app.get("/user/avatar/:id", (req, res) => {
+  UserController.userAvatar(req, res);
 });
 
-app.get("/auth/google", passport.authenticate("google", { scope: ["profile", "email"] }));
+app.get("/auth/google/success", (req, res) => {
+  res.render("loginsuccess", {
+    title: "Login Success",
+    user: req.session.user,
+  });
+});
 
-app.get("/auth/google/callback", passport.authenticate("google", { failureRedirect: "/user/login" }),
+app.get(
+  "/auth/google",
+  passport.authenticate("google", { scope: ["profile", "email"] })
+);
+
+app.get(
+  "/auth/google/callback",
+  passport.authenticate("google", { failureRedirect: "/user/login" }),
   (req, res) => {
     const session = req.session;
     res.json(session);

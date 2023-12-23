@@ -1,6 +1,7 @@
 const User = require("../models/userModel.js");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
+const path = require("path");
 
 const createToken = (_id) => {
   return jwt.sign({ _id }, "bitterbottel", { expiresIn: "1h" });
@@ -15,6 +16,8 @@ const UserController = {
   logoutUser,
   userProfile,
   inputEmail,
+  uploadAvatar,
+  userAvatar,
 };
 
 async function getAllUsers(req, res) {
@@ -31,6 +34,7 @@ async function getAllUsers(req, res) {
     res.status(500).json({ message: "Server Error" });
   }
 }
+
 async function getUserById(req, res) {
   try {
     const user = await User.findById(req.params.id).select("-password");
@@ -58,6 +62,18 @@ async function createUser(req, res) {
       avatar,
       role,
     } = req.body;
+
+    const existingUser = await User.findOne({ username });
+
+    if (existingUser) {
+      return res.status(400).json({
+        status: {
+          code: 400,
+          message: "Username already exists",
+        },
+      });
+    }
+
     const hashedPassword = await bcrypt.hash(password, 10);
 
     const newUser = new User({
@@ -72,17 +88,16 @@ async function createUser(req, res) {
     });
 
     const user = await newUser.save();
-    const token = createToken(user._id);
+
     res.status(200).json({
       status: {
         code: 200,
         message: "Success",
       },
       data: user,
-      token,
     });
   } catch (error) {
-    res.status(500).json({ message: "Server Error" })
+    res.status(500).json({ message: "Server Error" });
   }
 }
 
@@ -171,6 +186,64 @@ async function userProfile(req, res) {
       code: 500,
       message: error.message,
     });
+  }
+}
+
+async function uploadAvatar(req, res) {
+  try {
+    if (!req.file) {
+      return res.status(400).json({ message: "No image uploaded" });
+    }
+
+    const avatar = req.file.filename;
+    const userId = req.user._id;
+    const user = await User.findById(userId);
+
+    if (!req.user || !req.user._id) {
+      res.status(400).json({ message: "Invalid user information" });
+      return;
+    }
+
+    user.avatar = avatar;
+    await user.save();
+
+    res.status(200).json({
+      status: {
+        code: 200,
+        message: "Image uploaded successfully",
+      },
+      data: {
+        avatar: avatar,
+      },
+    });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+}
+
+async function userAvatar(req, res) {
+  try {
+    const user = await User.findById(req.params.id);
+
+    if (user && user.avatar) {
+      const imagePath = path.join(
+        __dirname,
+        "../images",
+        "avatars",
+        user.avatar
+      );
+
+      res.sendFile(imagePath);
+    } else {
+      res.status(404).json({
+        status: {
+          code: 404,
+          message: "User or avatar not found",
+        },
+      });
+    }
+  } catch (error) {
+    res.status(500).json({ message: error.message });
   }
 }
 
