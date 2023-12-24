@@ -16,3 +16,19 @@ Api endpoint for backend side application, created with MERN tech stack with its
 
 - Add pug template engine
 - Add API reference page
+- Added user login methode
+- Updated user model
+
+### Week 3
+
+- Integrating JWT
+- Added user wishlist feature
+- Added cart feature
+- Added checkout feature
+- Added login with google acccount
+
+###  Week 4
+
+- Added otp feature for reset user password (otp send by email)
+- Integrating dotenv
+
