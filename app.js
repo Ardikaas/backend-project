@@ -13,14 +13,14 @@ const multer = require("multer");
 const express = require("express");
 const protect = require("./middleware/authMiddleware");
 const expressSession = require("express-session");
+require("dotenv").config();
 
 passport.use(
   new GoogleStrategy(
     {
-      clientID:
-        "466682886251-aqceprl95ungd9bpvdjlu8909ptlg26b.apps.googleusercontent.com",
-      clientSecret: "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",
-      callbackURL: "http://localhost:8080/auth/google/callback",
+      clientID: process.env.GOSRTATCLIENTID,
+      clientSecret: process.env.GOSRTATCLIENTSECRET,
+      callbackURL: process.env.GOSTRATCALLBACKURL,
     },
 
     function (accessToken, refreshToken, profile, cb) {
@@ -42,9 +42,9 @@ passport.use(
   )
 );
 
-const uri = "mongodb://127.0.0.1:27017/backend";
+const uri = process.env.URI;
 const app = express();
-const port = 8080;
+const port = process.env.PORT;
 
 app.use(
   expressSession({
@@ -190,6 +190,18 @@ app.get("/user/logout", async (req, res) => {
   UserController.logoutUser(req, res);
 });
 
+app.post("/user/email", async (req, res) => {
+  UserController.inputEmail(req, res);
+});
+
+app.post("/user/otp", async (req, res) => {
+  UserController.otpAuth(req, res);
+});
+
+app.post("/user/reset", protect, async (req, res) => {
+  UserController.resetPassword(req, res);
+});
+
 app.post(
   "/user/avatar",
   protect,
@@ -225,5 +237,5 @@ app.get(
 );
 
 app.listen(port, () => {
-  console.log(`listening on port http://localhost:${port}`);
+  // console.log(`listening on port http://localhost:${port}`);
 });
