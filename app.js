@@ -80,17 +80,7 @@ const upload = (storage) => {
       },
     }),
     fileFilter: (req, file, cb) => {
-      const allowed = /jpeg|jpg|png|gif/;
-      const isAllowedFile = allowed.test(
-        path.extname(file.originalname).toLowerCase()
-      );
-      const isAllowedMime = allowed.test(file.mimetype);
-
-      if (isAllowedFile && isAllowedMime) {
-        cb(null, true);
-      } else {
-        cb(new Error("File harus berupa gambar (jpeg, jpg, png, gif)"), false);
-      }
+      cb(null, true);
     },
   });
 };
