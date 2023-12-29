@@ -32,3 +32,9 @@ Api endpoint for backend side application, created with MERN tech stack with its
 - Added otp feature for reset user password (otp send by email)
 - Integrating dotenv
 
+## Links:
+### Frontend Repository: [https://github.com/nyvee/frontend-project](https://github.com/nyvee/frontend-project)
+### Backend Repository: [https://github.com/Ardikaas/backend-project](https://github.com/Ardikaas/backend-project)
+### Landing Page: [https://lumerce-ofvucrey6a-et.a.run.app](https://lumerce-ofvucrey6a-et.a.run.app)
+### Products Dashboard: [https://lumerce-ofvucrey6a-et.a.run.app/dashboard](https://lumerce-ofvucrey6a-et.a.run.app/dashboard)
+### API: [https://ecommerce-api-ofvucrey6a-uc.a.run.app/](https://ecommerce-api-ofvucrey6a-uc.a.run.app/)
